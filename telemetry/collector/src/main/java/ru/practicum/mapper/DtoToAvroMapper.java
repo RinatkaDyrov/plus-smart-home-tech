@@ -1,5 +1,6 @@
 package ru.practicum.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.events.hub.*;
 import ru.practicum.events.sensor.*;
 import ru.yandex.practicum.kafka.telemetry.event.*;
@@ -7,6 +8,7 @@ import ru.yandex.practicum.kafka.telemetry.event.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class DtoToAvroMapper {
 
     public static SensorEventAvro mapToAvro(SensorEvent dto) {

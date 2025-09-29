@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class DtoToAvroMapper {
 
-    public SensorEventAvro mapToAvro(SensorEvent dto) {
+    public static SensorEventAvro mapToAvro(SensorEvent dto) {
 
         Object payload = switch (dto.getType()) {
             case LIGHT_SENSOR_EVENT -> mapToAvro((LightSensorEvent) dto);
@@ -27,7 +27,7 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public LightSensorAvro mapToAvro(LightSensorEvent dto) {
+    public static LightSensorAvro mapToAvro(LightSensorEvent dto) {
 
         return LightSensorAvro.newBuilder()
                 .setLinkQuality(dto.getLinkQuality())
@@ -35,7 +35,7 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public MotionSensorAvro mapToAvro(MotionSensorEvent dto) {
+    public static MotionSensorAvro mapToAvro(MotionSensorEvent dto) {
 
         return MotionSensorAvro.newBuilder()
                 .setLinkQuality(dto.getLinkQuality())
@@ -44,14 +44,14 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public SwitchSensorAvro mapToAvro(SwitchSensorEvent dto) {
+    public static SwitchSensorAvro mapToAvro(SwitchSensorEvent dto) {
 
         return SwitchSensorAvro.newBuilder()
                 .setState(dto.getState())
                 .build();
     }
 
-    public ClimateSensorAvro mapToAvro(ClimateSensorEvent dto) {
+    public static ClimateSensorAvro mapToAvro(ClimateSensorEvent dto) {
 
         return ClimateSensorAvro.newBuilder()
                 .setCo2Level(dto.getCo2Level())
@@ -60,7 +60,7 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public TemperatureSensorAvro mapToAvro(TemperatureSensorEvent dto)
+    public static TemperatureSensorAvro mapToAvro(TemperatureSensorEvent dto)
     {
         return TemperatureSensorAvro.newBuilder()
                 .setId(dto.getId())
@@ -71,7 +71,7 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public HubEventAvro mapToAvro(HubEvent dto) {
+    public static HubEventAvro mapToAvro(HubEvent dto) {
         Object payload = switch (dto.getType()) {
             case DEVICE_ADDED -> mapToAvro((DeviceAddedEvent) dto);
             case DEVICE_REMOVED -> mapToAvro((DeviceRemovedEvent) dto);
@@ -86,7 +86,7 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public DeviceAddedEventAvro mapToAvro(DeviceAddedEvent dto) {
+    public static DeviceAddedEventAvro mapToAvro(DeviceAddedEvent dto) {
 
         return DeviceAddedEventAvro.newBuilder()
                 .setId(dto.getId())
@@ -94,19 +94,20 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public DeviceRemovedEventAvro mapToAvro(DeviceRemovedEvent dto) {
+    public static DeviceRemovedEventAvro mapToAvro(DeviceRemovedEvent dto) {
 
         return DeviceRemovedEventAvro.newBuilder()
                 .setId(dto.getId())
                 .build();
     }
-    public ScenarioAddedEventAvro mapToAvro(ScenarioAddedEvent dto) {
+
+    public static ScenarioAddedEventAvro mapToAvro(ScenarioAddedEvent dto) {
 
         List<DeviceActionAvro> actions = dto.getActions().stream()
-                .map(this::mapToAvro)
+                .map(DtoToAvroMapper::mapToAvro)
                 .collect(Collectors.toList());
         List<ScenarioConditionAvro> conditions = dto.getCondition().stream()
-                .map(this::mapToAvro)
+                .map(DtoToAvroMapper::mapToAvro)
                 .collect(Collectors.toList());
 
         return ScenarioAddedEventAvro.newBuilder()
@@ -116,7 +117,7 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public DeviceActionAvro mapToAvro(DeviceAction dto) {
+    public static DeviceActionAvro mapToAvro(DeviceAction dto) {
 
         return DeviceActionAvro.newBuilder()
                 .setType(ActionTypeAvro.valueOf(dto.getType().name()))
@@ -125,7 +126,7 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public ScenarioConditionAvro mapToAvro(ScenarioCondition dto) {
+    public static ScenarioConditionAvro mapToAvro(ScenarioCondition dto) {
         return ScenarioConditionAvro.newBuilder()
                 .setType(ConditionTypeAvro.valueOf(dto.getType().name()))
                 .setValue(dto.getValue())
@@ -134,7 +135,7 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public ScenarioRemovedEventAvro mapToAvro(ScenarioRemovedEvent dto) {
+    public static ScenarioRemovedEventAvro mapToAvro(ScenarioRemovedEvent dto) {
 
         return ScenarioRemovedEventAvro.newBuilder()
                 .setName(dto.getName())

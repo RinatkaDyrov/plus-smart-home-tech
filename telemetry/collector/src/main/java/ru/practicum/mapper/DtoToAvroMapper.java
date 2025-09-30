@@ -106,7 +106,7 @@ public class DtoToAvroMapper {
 
         return ScenarioAddedEventAvro.newBuilder()
                 .setName(dto.getName())
-                .setConditions(dto.getCondition().stream().map(this::mapToAvro).collect(Collectors.toList()))
+                .setConditions(dto.getConditions().stream().map(this::mapToAvro).collect(Collectors.toList()))
                 .setActions(dto.getActions().stream().map(this::mapToAvro).collect(Collectors.toList()))
                 .build();
     }
@@ -114,19 +114,29 @@ public class DtoToAvroMapper {
     public DeviceActionAvro mapToAvro(DeviceAction dto) {
 
         return DeviceActionAvro.newBuilder()
-                .setType(ActionTypeAvro.valueOf(dto.getType().name()))
                 .setSensorId(dto.getSensorId())
+                .setType(ActionTypeAvro.valueOf(dto.getType().name()))
                 .setValue(dto.getValue())
                 .build();
     }
 
     public ScenarioConditionAvro mapToAvro(ScenarioCondition dto) {
-        return ScenarioConditionAvro.newBuilder()
-                .setType(ConditionTypeAvro.valueOf(dto.getType().name()))
-                .setValue(dto.getValue())
-                .setOperation(ConditionOperationAvro.valueOf(dto.getOperation().name()))
+
+        ScenarioConditionAvro.Builder builder = ScenarioConditionAvro.newBuilder()
                 .setSensorId(dto.getSensorId())
-                .build();
+                .setType(ConditionTypeAvro.valueOf(dto.getType().name()))
+                .setOperation(ConditionOperationAvro.valueOf(dto.getOperation().name()));
+
+        switch (dto.getValue()) {
+            case null -> builder.setValue(null);
+            case Boolean b -> builder.setValue(dto.getValue());
+            case Integer i -> builder.setValue(dto.getValue());
+            case Long l -> builder.setValue(dto.getValue());
+            default -> throw new IllegalStateException("Неподдерживаемый тип значения: " +
+                    dto.getValue().getClass().getName());
+        }
+
+        return builder.build();
     }
 
     public ScenarioRemovedEventAvro mapToAvro(ScenarioRemovedEvent dto) {

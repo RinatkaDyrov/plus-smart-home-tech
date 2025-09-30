@@ -27,14 +27,15 @@ public class CollectorService {
     @Value("${kafka.topics.hubs}")
     private String topicHub;
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
+    private final DtoToAvroMapper mapper;
 
     public void send(SensorEvent event) {
-        byte[] data = serialize(DtoToAvroMapper.mapToAvro(event));
+        byte[] data = serialize(mapper.mapToAvro(event));
         sendWithReport(topicSensor, event.getHubId(), data);
     }
 
     public void send(HubEvent event) {
-        byte[] data = serialize(DtoToAvroMapper.mapToAvro(event));
+        byte[] data = serialize(mapper.mapToAvro(event));
         sendWithReport(topicHub, event.getHubId(), data);
     }
 

@@ -23,9 +23,9 @@ import java.io.IOException;
 public class CollectorService {
 
     @Value("${kafka.topics.sensors}")
-    private final String topicSensor;
+    private String topicSensor;
     @Value("${kafka.topics.hubs}")
-    private final String topicHub;
+    private String topicHub;
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
 
     public void send(SensorEvent event) {

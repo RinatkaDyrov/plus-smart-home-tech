@@ -92,7 +92,7 @@ public class DtoToAvroMapper {
 
         return DeviceAddedEventAvro.newBuilder()
                 .setId(dto.getId())
-                .setType(DeviceTypeAvro.valueOf(dto.getType().name()))
+                .setType(DeviceTypeAvro.valueOf(dto.getDeviceType().name()))
                 .build();
     }
 

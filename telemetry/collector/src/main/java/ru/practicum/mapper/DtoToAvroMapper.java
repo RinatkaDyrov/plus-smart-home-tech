@@ -1,6 +1,6 @@
 package ru.practicum.mapper;
 
-import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.avro.specific.SpecificRecord;
 import org.springframework.stereotype.Component;
 import ru.practicum.events.hub.*;
 import ru.practicum.events.sensor.*;
@@ -13,13 +13,12 @@ public class DtoToAvroMapper {
 
     public SensorEventAvro mapToAvro(SensorEvent dto) {
 
-        SpecificRecordBase payload = switch (dto) {
-            case LightSensorEvent e -> mapToAvro(dto);
-            case MotionSensorEvent e -> mapToAvro(dto);
-            case SwitchSensorEvent e -> mapToAvro(dto);
-            case ClimateSensorEvent e -> mapToAvro(dto);
-            case TemperatureSensorEvent e -> mapToAvro(dto);
-            default -> throw new IllegalStateException("Unexpected value: " + dto);
+        SpecificRecord payload = switch (dto.getType()) {
+            case LIGHT_SENSOR_EVENT -> mapToAvro((LightSensorEvent) dto);
+            case MOTION_SENSOR_EVENT -> mapToAvro((MotionSensorEvent) dto);
+            case SWITCH_SENSOR_EVENT -> mapToAvro((SwitchSensorEvent) dto);
+            case CLIMATE_SENSOR_EVENT -> mapToAvro((ClimateSensorEvent) dto);
+            case TEMPERATURE_SENSOR_EVENT -> mapToAvro((TemperatureSensorEvent) dto);
         };
 
         return SensorEventAvro.newBuilder()
@@ -63,7 +62,8 @@ public class DtoToAvroMapper {
                 .build();
     }
 
-    public TemperatureSensorAvro mapToAvro(TemperatureSensorEvent dto) {
+    public TemperatureSensorAvro mapToAvro(TemperatureSensorEvent dto)
+    {
         return TemperatureSensorAvro.newBuilder()
                 .setId(dto.getId())
                 .setHubId(dto.getHubId())
@@ -74,12 +74,11 @@ public class DtoToAvroMapper {
     }
 
     public HubEventAvro mapToAvro(HubEvent dto) {
-        SpecificRecordBase payload = switch (dto) {
-            case DeviceAddedEvent e -> mapToAvro(dto);
-            case DeviceRemovedEvent e -> mapToAvro(dto);
-            case ScenarioAddedEvent e -> mapToAvro(dto);
-            case ScenarioRemovedEvent e -> mapToAvro(dto);
-            default -> throw new IllegalStateException("Unexpected value: " + dto);
+        SpecificRecord payload = switch (dto.getType()) {
+            case DEVICE_ADDED -> mapToAvro((DeviceAddedEvent) dto);
+            case DEVICE_REMOVED -> mapToAvro((DeviceRemovedEvent) dto);
+            case SCENARIO_ADDED -> mapToAvro((ScenarioAddedEvent) dto);
+            case SCENARIO_REMOVED -> mapToAvro((ScenarioRemovedEvent) dto);
         };
 
         return HubEventAvro.newBuilder()

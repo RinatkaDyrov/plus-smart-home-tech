@@ -3,6 +3,7 @@ package ru.practicum.events.hub;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.avro.specific.SpecificRecord;
 
 @Getter
 @Setter

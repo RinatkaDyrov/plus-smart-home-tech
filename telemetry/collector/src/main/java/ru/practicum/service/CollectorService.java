@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.events.hub.HubEvent;
 import ru.practicum.events.sensor.SensorEvent;
 import ru.practicum.mapper.DtoToAvroMapper;
+import ru.practicum.mapper.hub.BaseHubEventHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,14 +30,15 @@ public class CollectorService {
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final DtoToAvroMapper mapper;
 
+    private BaseHubEventHandler handler;
+
     public void send(SensorEvent event) {
         byte[] data = serialize(mapper.mapToAvro(event));
         sendWithReport(topicSensor, event.getHubId(), data);
     }
 
     public void send(HubEvent event) {
-        byte[] data = serialize(mapper.mapToAvro(event));
-        sendWithReport(topicHub, event.getHubId(), data);
+        handler.handle(event);
     }
 
     private byte[] serialize(SpecificRecord record) {

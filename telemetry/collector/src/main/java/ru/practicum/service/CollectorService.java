@@ -11,26 +11,44 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import ru.practicum.events.hub.HubEvent;
+import ru.practicum.events.hub.HubEventType;
 import ru.practicum.events.sensor.SensorEvent;
 import ru.practicum.mapper.DtoToAvroMapper;
-import ru.practicum.mapper.hub.BaseHubEventHandler;
+import ru.practicum.mapper.hub.HubEventHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Slf4j
 public class CollectorService {
 
     @Value("${kafka.topics.sensors}")
     private String topicSensor;
-    @Value("${kafka.topics.hubs}")
-    private String topicHub;
+
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final DtoToAvroMapper mapper;
+    private final Map<HubEventType, HubEventHandler> hubHandlers;
 
-    private BaseHubEventHandler handler;
+    public CollectorService(KafkaTemplate<String, byte[]> kafkaTemplate,
+                            DtoToAvroMapper mapper,
+                            List<HubEventHandler> handlers) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.mapper = mapper;
+        this.hubHandlers = handlers.stream()
+                .collect(Collectors.toMap(
+                        HubEventHandler::getType,
+                        h -> h,
+                        (a, b) -> a,
+                        () -> new EnumMap<>(HubEventType.class)
+                ));
+        log.info("Hub handlers registered: {}", hubHandlers.keySet());
+    }
 
     public void send(SensorEvent event) {
         byte[] data = serialize(mapper.mapToAvro(event));
@@ -38,7 +56,11 @@ public class CollectorService {
     }
 
     public void send(HubEvent event) {
-        handler.handle(event);
+        HubEventHandler h = hubHandlers.get(event.getType());
+        if (h == null) {
+            throw new IllegalArgumentException("No handler for " + event.getType());
+        }
+        h.handle(event);
     }
 
     private byte[] serialize(SpecificRecord record) {

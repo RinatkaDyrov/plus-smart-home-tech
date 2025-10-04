@@ -123,21 +123,12 @@ public class DtoToAvroMapper {
 
     public ScenarioConditionAvro mapToAvro(ScenarioCondition dto) {
 
-        ScenarioConditionAvro.Builder builder = ScenarioConditionAvro.newBuilder()
+        return ScenarioConditionAvro.newBuilder()
                 .setSensorId(dto.getSensorId())
                 .setType(ConditionTypeAvro.valueOf(dto.getType().name()))
-                .setOperation(ConditionOperationAvro.valueOf(dto.getOperation().name()));
-
-        switch (dto.getValue()) {
-            case null -> builder.setValue(null);
-            case Boolean b -> builder.setValue(dto.getValue());
-            case Integer i -> builder.setValue(dto.getValue());
-            case Long l -> builder.setValue(dto.getValue());
-            default -> throw new IllegalStateException("Неподдерживаемый тип значения: " +
-                    dto.getValue().getClass().getName());
-        }
-
-        return builder.build();
+                .setOperation(ConditionOperationAvro.valueOf(dto.getOperation().name()))
+                .setValue(dto.getValue())
+                .build();
     }
 
     public ScenarioRemovedEventAvro mapToAvro(ScenarioRemovedEvent dto) {

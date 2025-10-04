@@ -3,7 +3,6 @@ package ru.practicum.events.hub;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.avro.specific.SpecificRecord;
 
 @Getter
 @Setter
@@ -13,6 +12,5 @@ public class ScenarioCondition {
     private String sensorId;
     private ConditionType type;
     private ConditionOperation operation;
-    private Object value;
-
+    private Integer value;
 }

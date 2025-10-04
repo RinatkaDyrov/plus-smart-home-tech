@@ -21,7 +21,7 @@ public abstract class BaseHubEventHandler<T extends SpecificRecordBase> implemen
     @Override
     public void handle(HubEvent event) {
         T avro = mapToAvro(event);
-        producer.send(topicHub, avro);
+        producer.sendWithReport(topicHub, event.getHubId(), avro);
         log.debug("Отправлен {} в {}: {}", avro.getClass().getSimpleName(), topicHub, avro);
     }
 }

@@ -4,7 +4,7 @@ import ru.practicum.events.hub.HubEvent;
 import ru.practicum.events.hub.HubEventType;
 
 public interface HubEventHandler {
-    HubEventType getMessageType();
+    HubEventType getType();
 
     void handle(HubEvent event);
 }

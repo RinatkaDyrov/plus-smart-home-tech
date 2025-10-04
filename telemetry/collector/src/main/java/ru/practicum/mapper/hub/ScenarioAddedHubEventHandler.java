@@ -33,7 +33,7 @@ public class ScenarioAddedHubEventHandler extends BaseHubEventHandler {
     }
 
     @Override
-    public HubEventType getMessageType() {
+    public HubEventType getType() {
         return HubEventType.SCENARIO_ADDED;
     }
 }

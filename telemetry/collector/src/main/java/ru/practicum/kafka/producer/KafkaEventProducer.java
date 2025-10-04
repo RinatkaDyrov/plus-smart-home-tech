@@ -7,6 +7,7 @@ import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecord;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +19,10 @@ import java.io.IOException;
 @Slf4j
 public class KafkaEventProducer {
 
-    private final KafkaTemplate<String, byte[]> kafkaTemplate;
+    private final KafkaTemplate<String, SpecificRecordBase> kafkaTemplate;
 
-    public void sendWithReport(String topic, String key, SpecificRecord record) {
-        kafkaTemplate.send(topic, key, serialize(record))
+    public void sendWithReport(String topic, String key, SpecificRecordBase record) {
+        kafkaTemplate.send(topic, key, record)
                 .whenComplete(((stringSendResult, throwable) -> {
                     if (throwable != null) {
                         log.warn("Ошибка при отправке сообщения в топик {}: {}", topic, throwable.getMessage());

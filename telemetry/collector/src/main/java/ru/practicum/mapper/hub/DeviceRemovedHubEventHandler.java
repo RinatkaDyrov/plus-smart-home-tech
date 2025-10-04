@@ -15,7 +15,7 @@ public class DeviceRemovedHubEventHandler extends BaseHubEventHandler {
     }
 
     @Override
-    protected SpecificRecordBase mapToAvro(HubEvent event) {
+    protected SpecificRecordBase mapToAvroPayload(HubEvent event) {
         DeviceRemovedEvent e = (DeviceRemovedEvent) event;
 
         return DeviceRemovedEventAvro.newBuilder()

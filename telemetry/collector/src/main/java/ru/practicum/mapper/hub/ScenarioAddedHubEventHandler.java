@@ -6,8 +6,6 @@ import ru.practicum.events.hub.HubEvent;
 import ru.practicum.events.hub.HubEventType;
 import ru.practicum.events.hub.ScenarioAddedEvent;
 import ru.practicum.kafka.producer.KafkaEventProducer;
-import ru.practicum.mapper.DeviceActionMapper;
-import ru.practicum.mapper.ScenarioConditionMapper;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 
 @Component
@@ -22,7 +20,7 @@ public class ScenarioAddedHubEventHandler extends BaseHubEventHandler {
 
 
     @Override
-    protected SpecificRecordBase mapToAvro(HubEvent event) {
+    protected SpecificRecordBase mapToAvroPayload(HubEvent event) {
         ScenarioAddedEvent e = (ScenarioAddedEvent) event;
 
         return ScenarioAddedEventAvro.newBuilder()

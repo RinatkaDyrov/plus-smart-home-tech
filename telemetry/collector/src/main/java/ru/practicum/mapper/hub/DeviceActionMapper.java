@@ -1,4 +1,4 @@
-package ru.practicum.mapper;
+package ru.practicum.mapper.hub;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.events.hub.DeviceAction;

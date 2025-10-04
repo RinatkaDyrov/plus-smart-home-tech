@@ -15,7 +15,7 @@ public class ScenarioRemovedHubEventHandler extends BaseHubEventHandler {
     }
 
     @Override
-    protected SpecificRecordBase mapToAvro(HubEvent event) {
+    protected SpecificRecordBase mapToAvroPayload(HubEvent event) {
         ScenarioRemovedEvent e = (ScenarioRemovedEvent) event;
 
         return ScenarioRemovedEventAvro.newBuilder()

@@ -6,7 +6,6 @@ import ru.practicum.events.hub.DeviceAddedEvent;
 import ru.practicum.events.hub.HubEvent;
 import ru.practicum.events.hub.HubEventType;
 import ru.practicum.kafka.producer.KafkaEventProducer;
-import ru.practicum.mapper.EnumMapper;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 
@@ -17,7 +16,7 @@ public class DeviceAddedHubEventHandler extends BaseHubEventHandler {
     }
 
     @Override
-    protected SpecificRecordBase mapToAvro(HubEvent event) {
+    protected SpecificRecordBase mapToAvroPayload(HubEvent event) {
         DeviceAddedEvent e = (DeviceAddedEvent) event;
         return DeviceAddedEventAvro.newBuilder()
                 .setId(e.getId())

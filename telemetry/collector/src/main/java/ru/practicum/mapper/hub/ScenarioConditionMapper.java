@@ -2,6 +2,7 @@ package ru.practicum.mapper.hub;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.events.hub.ScenarioCondition;
+import ru.yandex.practicum.grpc.telemetry.event.ScenarioConditionProto;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionOperationAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioConditionAvro;
@@ -19,7 +20,25 @@ public class ScenarioConditionMapper {
                 .build();
     }
 
+    public ScenarioConditionAvro mapProtoToAvro(ScenarioConditionProto condition) {
+        Object value = switch (condition.getValueCase()) {
+            case INT_VALUE -> condition.getIntValue();
+            case BOOL_VALUE -> condition.getBoolValue();
+            default -> null;
+        };
+        return ScenarioConditionAvro.newBuilder()
+                .setSensorId(condition.getSensorId())
+                .setType(ConditionTypeAvro.valueOf(condition.getType().name()))
+                .setOperation(ConditionOperationAvro.valueOf(condition.getOperation().name()))
+                .setValue(value)
+                .build();
+    }
+
     public List<ScenarioConditionAvro> mapToAvro(List<ScenarioCondition> conditions) {
         return conditions.stream().map(this::mapToAvro).toList();
+    }
+
+    public List<ScenarioConditionAvro> mapProtoToAvro(List<ScenarioConditionProto> conditions) {
+        return conditions.stream().map(this::mapProtoToAvro).toList();
     }
 }

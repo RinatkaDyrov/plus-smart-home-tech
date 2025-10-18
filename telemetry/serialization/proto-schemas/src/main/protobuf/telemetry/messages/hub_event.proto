@@ -81,5 +81,5 @@ message ScenarioAddedEventProto {
 }
 
 message ScenarioRemovedEventProto {
-    string id = 1;
+    string name = 1;
 }

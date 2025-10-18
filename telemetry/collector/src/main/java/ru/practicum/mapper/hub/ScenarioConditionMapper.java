@@ -21,11 +21,16 @@ public class ScenarioConditionMapper {
     }
 
     public ScenarioConditionAvro mapProtoToAvro(ScenarioConditionProto condition) {
+        Object value = switch (condition.getValueCase()) {
+            case INT_VALUE -> condition.getIntValue();
+            case BOOL_VALUE -> condition.getBoolValue();
+            default -> null;
+        };
         return ScenarioConditionAvro.newBuilder()
                 .setSensorId(condition.getSensorId())
                 .setType(ConditionTypeAvro.valueOf(condition.getType().name()))
                 .setOperation(ConditionOperationAvro.valueOf(condition.getOperation().name()))
-                .setValue(condition.getIntValue())
+                .setValue(value)
                 .build();
     }
 

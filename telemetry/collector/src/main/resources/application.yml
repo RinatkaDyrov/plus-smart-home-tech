@@ -8,3 +8,6 @@ kafka:
   topics:
     sensors: telemetry.sensors.v1
     hubs: telemetry.hubs.v1
+grpc:
+  server:
+    port: 59091

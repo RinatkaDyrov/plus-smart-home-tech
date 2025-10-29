@@ -2,10 +2,10 @@ package ru.practicum.mapper.sensor;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Component;
-import ru.practicum.events.sensor.SensorEvent;
 import ru.practicum.events.sensor.SensorEventType;
-import ru.practicum.events.sensor.SwitchSensorEvent;
 import ru.practicum.kafka.producer.KafkaEventProducer;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.SwitchSensorProto;
 import ru.yandex.practicum.kafka.telemetry.event.SwitchSensorAvro;
 
 @Component
@@ -15,8 +15,8 @@ public class SwitchSensorEventHandler extends BaseSensorEventHandler {
     }
 
     @Override
-    protected SpecificRecordBase mapToAvroPayload(SensorEvent event) {
-        SwitchSensorEvent e = (SwitchSensorEvent) event;
+    protected SpecificRecordBase mapToAvroPayload(SensorEventProto event) {
+        SwitchSensorProto e = event.getSwitchSensorEvent();
 
         return SwitchSensorAvro.newBuilder()
                 .setState(e.getState())

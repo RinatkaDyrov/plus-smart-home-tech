@@ -2,12 +2,12 @@ package ru.practicum.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.events.hub.HubEvent;
 import ru.practicum.events.hub.HubEventType;
-import ru.practicum.events.sensor.SensorEvent;
 import ru.practicum.events.sensor.SensorEventType;
 import ru.practicum.mapper.hub.HubEventHandler;
 import ru.practicum.mapper.sensor.SensorEventHandler;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -40,19 +40,19 @@ public class CollectorService {
         log.info("Hub handlers registered: {}", hubHandlers.keySet());
     }
 
-    public void send(SensorEvent event) {
-        SensorEventHandler s = sensorHandlers.get(event.getType());
+    public void send(SensorEventProto proto) {
+        SensorEventHandler s = sensorHandlers.get(SensorEventType.valueOf(proto.getPayloadCase().name()));
         if (s == null) {
-            throw new IllegalArgumentException("No handler for " + event.getType());
+            throw new IllegalArgumentException("No handler for " + proto.getPayloadCase());
         }
-        s.handle(event);
+        s.handle(proto);
     }
 
-    public void send(HubEvent event) {
-        HubEventHandler h = hubHandlers.get(event.getType());
+    public void send(HubEventProto proto) {
+        HubEventHandler h = hubHandlers.get(HubEventType.valueOf(proto.getPayloadCase().name()));
         if (h == null) {
-            throw new IllegalArgumentException("No handler for " + event.getType());
+            throw new IllegalArgumentException("No handler for " + proto.getPayloadCase());
         }
-        h.handle(event);
+        h.handle(proto);
     }
 }

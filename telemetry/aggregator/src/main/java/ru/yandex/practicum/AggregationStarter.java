@@ -2,52 +2,62 @@ package ru.yandex.practicum;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
+import ru.yandex.practicum.service.AggregatorService;
 
-/**
- * Класс AggregationStarter, ответственный за запуск агрегации данных.
- */
+import java.time.Duration;
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class AggregationStarter {
 
-    // ... объявление полей и конструктора ...
     private static final String SENSOR_TOPIC = "telemetry.sensors.v1";
     private static final String SENSOR_SNAPSHOT_TOPIC = "telemetry.snapshots.v1";
+    private static final long POLL_TIMEOUT = 5;
 
-    /**
-     * Метод для начала процесса агрегации данных.
-     * Подписывается на топики для получения событий от датчиков,
-     * формирует снимок их состояния и записывает в кафку.
-     */
+    private final Consumer<String, SpecificRecordBase> consumer;
+    private final Producer<String, SpecificRecordBase> producer;
+    private final AggregatorService service;
+
     public void start() {
+        Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
         try {
-
-            // ... подготовка к обработке данных ...
-            // ... например, подписка на топик ...
-
-            // Цикл обработки событий
+            consumer.subscribe(List.of(SENSOR_TOPIC));
             while (true) {
-                // ... реализация цикла опроса ...
-                // ... и обработка полученных данных ...
+                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofSeconds(POLL_TIMEOUT));
+                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
+                    service.updateState((SensorEventAvro) record.value()).ifPresent(snapshot ->
+                            producer.send(new ProducerRecord<>(
+                                    SENSOR_SNAPSHOT_TOPIC,
+                                    null,
+                                    snapshot.getTimestamp().toEpochMilli(),
+                                    snapshot.getHubId(),
+                                    snapshot)));
+                }
+                consumer.commitAsync();
             }
 
         } catch (WakeupException ignored) {
-            // игнорируем - закрываем консьюмер и продюсер в блоке finally
+            log.warn("Прервано ожидание потока {}", Thread.currentThread().getName());
         } catch (Exception e) {
             log.error("Ошибка во время обработки событий от датчиков", e);
         } finally {
 
             try {
-                // Перед тем, как закрыть продюсер и консьюмер, нужно убедится,
-                // что все сообщения, лежащие в буффере, отправлены и
-                // все оффсеты обработанных сообщений зафиксированы
-
-                // здесь нужно вызвать метод продюсера для сброса данных в буффере
-                // здесь нужно вызвать метод консьюмера для фиксиции смещений
-
+                log.info("Сбрасываем буфер продюсера через flush()");
+                producer.flush();
+                log.info("Делаем финальный commitSync() оффсетов");
+                consumer.commitSync();
             } finally {
                 log.info("Закрываем консьюмер");
                 consumer.close();
@@ -55,5 +65,6 @@ public class AggregationStarter {
                 producer.close();
             }
         }
+
     }
 }

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.kafka;
 
 import jakarta.annotation.PreDestroy;
-import lombok.Getter;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -40,13 +39,21 @@ public class KafkaSensorSnapshotProducer {
         return new SensorSnapshotProducer(producer);
     }
 
-    @Getter
-        public record SensorSnapshotProducer(Producer<String, SpecificRecordBase> producer) {
+    public static class SensorSnapshotProducer {
+        private final Producer<String, SpecificRecordBase> producer;
+
+        public SensorSnapshotProducer(Producer<String, SpecificRecordBase> producer) {
+            this.producer = producer;
+        }
+
+        public Producer<String, SpecificRecordBase> getProducer() {
+            return producer;
+        }
 
         @PreDestroy
-            public void close() {
-                producer.flush();
-                producer.close(Duration.ofSeconds(10));
-            }
+        public void close() {
+            producer.flush();
+            producer.close(Duration.ofSeconds(10));
         }
+    }
 }

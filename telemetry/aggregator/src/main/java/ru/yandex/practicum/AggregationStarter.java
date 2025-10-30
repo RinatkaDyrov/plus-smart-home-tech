@@ -23,7 +23,7 @@ public class AggregationStarter {
 
     private static final String SENSOR_TOPIC = "telemetry.sensors.v1";
     private static final String SENSOR_SNAPSHOT_TOPIC = "telemetry.snapshots.v1";
-    private static final long POLL_TIMEOUT = 5;
+    private static final long POLL_TIMEOUT = 1;
 
     private final Consumer<String, SpecificRecordBase> consumer;
     private final Producer<String, SpecificRecordBase> producer;

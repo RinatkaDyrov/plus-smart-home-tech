@@ -1,4 +1,4 @@
-package ru.practicum.serdes;
+package ru.practicum.eventDeserializer;
 
 import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryDecoder;

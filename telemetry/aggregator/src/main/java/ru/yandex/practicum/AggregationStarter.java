@@ -44,7 +44,7 @@ public class AggregationStarter {
                                     snapshot.getHubId(),
                                     snapshot)));
                 }
-                consumer.commitAsync();
+                consumer.commitSync();
             }
 
         } catch (WakeupException ignored) {

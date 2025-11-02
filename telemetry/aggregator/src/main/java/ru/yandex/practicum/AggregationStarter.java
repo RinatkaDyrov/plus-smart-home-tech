@@ -30,41 +30,43 @@ public class AggregationStarter {
     private final AggregatorService service;
 
     public void start() {
-        Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
-        try {
-            consumer.subscribe(List.of(SENSOR_TOPIC));
-            while (true) {
-                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofSeconds(POLL_TIMEOUT));
-                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
-                    service.updateState((SensorEventAvro) record.value()).ifPresent(snapshot ->
-                            producer.send(new ProducerRecord<>(
-                                    SENSOR_SNAPSHOT_TOPIC,
-                                    null,
-                                    snapshot.getTimestamp().toEpochMilli(),
-                                    snapshot.getHubId(),
-                                    snapshot)));
-                }
-                consumer.commitSync();
-            }
+        consumer.subscribe(List.of(SENSOR_TOPIC));
 
-        } catch (WakeupException ignored) {
-            log.warn("Прервано ожидание потока {}", Thread.currentThread().getName());
-        } catch (Exception e) {
-            log.error("Ошибка во время обработки событий от датчиков", e);
-        } finally {
-
+        Thread thread = new Thread(() -> {
             try {
-                log.info("Сбрасываем буфер продюсера через flush()");
-                producer.flush();
-                log.info("Делаем финальный commitSync() оффсетов");
-                consumer.commitSync();
-            } finally {
-                log.info("Закрываем консьюмер");
-                consumer.close();
-                log.info("Закрываем продюсер");
-                producer.close();
-            }
-        }
+                while (true) {
+                    ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofSeconds(POLL_TIMEOUT));
+                    for (ConsumerRecord<String, SpecificRecordBase> record : records) {
+                        service.updateState((SensorEventAvro) record.value()).ifPresent(snapshot ->
+                                producer.send(new ProducerRecord<>(
+                                        SENSOR_SNAPSHOT_TOPIC,
+                                        null,
+                                        snapshot.getTimestamp().toEpochMilli(),
+                                        snapshot.getHubId(),
+                                        snapshot)));
+                    }
+                    consumer.commitSync();
+                }
 
+            } catch (WakeupException ignored) {
+                log.warn("Прервано ожидание потока {}", Thread.currentThread().getName());
+            } catch (Exception e) {
+                log.error("Ошибка во время обработки событий от датчиков", e);
+            } finally {
+//
+//                try {
+//                    log.info("Сбрасываем буфер продюсера через flush()");
+//                    producer.flush();
+//                    log.info("Делаем финальный commitSync() оффсетов");
+//                    consumer.commitSync();
+//                } finally {
+                    log.info("Закрываем консьюмер");
+                    consumer.close();
+                    log.info("Закрываем продюсер");
+                    producer.close();
+//                }
+            }
+        }, "aggregation-thread");
+        thread.start();
     }
 }

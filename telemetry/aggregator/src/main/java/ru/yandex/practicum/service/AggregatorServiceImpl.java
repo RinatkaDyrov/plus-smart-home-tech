@@ -15,16 +15,16 @@ public class AggregatorServiceImpl implements AggregatorService {
 
     @Override
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
-        SensorsSnapshotAvro sensorsSnapshotAvro = snapshots.computeIfAbsent(event.getHubId(), hubId ->
-                SensorsSnapshotAvro.newBuilder()
-                        .setHubId(hubId)
-                        .setSensorsState(new HashMap<>())
-                        .build()
-        );
+        SensorsSnapshotAvro sensorsSnapshotAvro = snapshots.computeIfAbsent(event.getHubId(), hubId -> {
+            SensorsSnapshotAvro newSnapshot = new SensorsSnapshotAvro();
+            newSnapshot.setHubId(hubId);
+            newSnapshot.setSensorsState(new HashMap<>());
+            return newSnapshot;
+        });
 
         if (sensorsSnapshotAvro.getSensorsState().containsKey(event.getId())) {
             SensorStateAvro oldState = sensorsSnapshotAvro.getSensorsState().get(event.getId());
-            if (event.getTimestamp().isAfter(oldState.getTimestamp()) ||
+            if (event.getTimestamp().isBefore(oldState.getTimestamp()) ||
                     oldState.getData().equals(event.getPayload())) {
                 return Optional.empty();
             }

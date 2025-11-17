@@ -37,9 +37,9 @@ public class ScenarioManager {
                             return false;
                         }
                         return sensorConditionManager.extractValue(
-                                ConditionType.valueOf(sc.getCondition().getType()),
-                                snapshot.getSensorsState().get(sensorId)
-                        )
+                                        ConditionType.valueOf(sc.getCondition().getType()),
+                                        snapshot.getSensorsState().get(sensorId)
+                                )
                                 .map(val -> sensorConditionManager.compare(
                                         Operation.valueOf(sc.getCondition().getOperation()),
                                         val,
@@ -58,7 +58,8 @@ public class ScenarioManager {
                     DeviceActionProto actionProto = sensorConditionManager.buildAction(
                             ActionType.valueOf(action.getType()),
                             sensor.getId(),
-                            action.getValue());
+                            action.getValue()
+                    );
 
                     DeviceActionRequest request = DeviceActionRequest.newBuilder()
                             .setHubId(scenario.getHubId())

@@ -1,7 +1,7 @@
 grpc:
   client:
     hub-router:
-      address: 'static://localhost:59090'
+      address: "static://localhost:59090"
       enableKeepAlive: true
       keepAliveWithoutCalls: true
       negotiationType: plaintext
@@ -33,7 +33,7 @@ spring:
       mode: always
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5439/analyzer
+    url: jdbc:postgresql://localhost:5432/analyzer
     username: analyzer
     password: analyzer
 

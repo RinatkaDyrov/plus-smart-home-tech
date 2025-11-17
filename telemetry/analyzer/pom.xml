@@ -10,6 +10,10 @@
     </parent>
 
     <artifactId>analyzer</artifactId>
+    <packaging>jar</packaging>
+
+    <name>analyzer</name>
+    <url>http://maven.apache.org</url>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -55,6 +59,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.devh</groupId>
@@ -69,4 +74,12 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

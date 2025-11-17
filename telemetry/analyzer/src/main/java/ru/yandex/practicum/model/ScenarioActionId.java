@@ -12,5 +12,5 @@ import java.io.Serializable;
 public class ScenarioActionId implements Serializable {
     private Long scenarioId;
     private String sensorId;
-    private Long conditionId;
+    private Long actionId;
 }

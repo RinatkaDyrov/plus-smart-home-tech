@@ -24,7 +24,7 @@ public class HubEventProcessor implements Runnable {
 
     @Value("${topics.hubs}")
     private String topics;
-    private final Properties hubProperties;
+    private final Properties hubConsumerProperties;
     private final HubEventService hubEventService;
 
     private Consumer<String, HubEventAvro> consumer;
@@ -32,7 +32,7 @@ public class HubEventProcessor implements Runnable {
 
     @Override
     public void run() {
-        consumer = new KafkaConsumer<>(hubProperties);
+        consumer = new KafkaConsumer<>(hubConsumerProperties);
         consumer.subscribe(List.of(topics));
         try {
             while (isRunning) {

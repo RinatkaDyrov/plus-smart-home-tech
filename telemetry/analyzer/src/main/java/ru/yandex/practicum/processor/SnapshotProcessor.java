@@ -24,7 +24,7 @@ public class SnapshotProcessor implements Runnable {
 
     @Value("${topics.snapshots}")
     private String topics;
-    private final Properties snapshotProperties;
+    private final Properties snapshotConsumerProperties;
     private final SnapshotService snapshotService;
 
     private Consumer<String, SensorsSnapshotAvro> consumer;
@@ -32,7 +32,7 @@ public class SnapshotProcessor implements Runnable {
 
     @Override
     public void run() {
-        consumer = new KafkaConsumer<>(snapshotProperties);
+        consumer = new KafkaConsumer<>(snapshotConsumerProperties);
         consumer.subscribe(List.of(topics));
         try {
             while (isRunning) {

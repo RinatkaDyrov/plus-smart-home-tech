@@ -3,6 +3,7 @@ package ru.yandex.practicum.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.kafka.telemetry.event.*;
 import ru.yandex.practicum.model.*;
 import ru.yandex.practicum.repository.*;
@@ -21,6 +22,7 @@ public class HubEventService {
     private final ScenarioActionRepository scenarioActionRepository;
     private final ScenarioConditionRepository scenarioConditionRepository;
 
+    @Transactional
     public void handleEvent(HubEventAvro event) {
         String hubId = event.getHubId();
 

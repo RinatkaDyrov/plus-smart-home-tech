@@ -13,7 +13,7 @@ import java.util.Properties;
 public class KafkaConfig {
 
 
-    @Value("${analyzer.kafka.bootstrapServers}")
+    @Value("${analyzer.kafka.bootstrap-server}")
     private String bootstrapServers;
 
     @Value("${analyzer.kafka.consumer.key-deserializer}")

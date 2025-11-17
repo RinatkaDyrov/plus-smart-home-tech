@@ -15,10 +15,10 @@ analyzer:
       enable-auto-commit: false
     hub:
       group-id: hub-events-group
-      value-deserializer: ru.practicum.event_deserializer.HubEventDeserializer
+      value-deserializer: ru.practicum.eventDeserializer.HubEventDeserializer
     snapshot:
       group-id: snapshots-group
-      value-deserializer: ru.practicum.event_deserializer.SensorSnapshotEventDeserializer
+      value-deserializer: ru.practicum.eventDeserializer.SensorSnapshotEventDeserializer
 
 spring:
   jpa:

@@ -28,13 +28,13 @@ public class KafkaConfig {
     @Value("${analyzer.kafka.hub.group-id}")
     private String hubGroupId;
 
-    @Value("${analyzer.kafka.consumer.hub.value-deserializer}")
+    @Value("${analyzer.kafka.hub.value-deserializer}")
     private String hubValueDeserializer;
 
     @Value("${analyzer.kafka.snapshot.group-id}")
     private String snapshotGroupId;
 
-    @Value("${analyzer.kafka.consumer.snapshot.value-deserializer}")
+    @Value("${analyzer.kafka.snapshot.value-deserializer}")
     private String snapshotValueDeserializer;
 
     @Bean

@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
@@ -24,7 +25,10 @@ public class HubEventProcessor implements Runnable {
 
     @Value("${topics.hubs}")
     private String topics;
+
+    @Qualifier("hubConsumerProperties")
     private final Properties hubConsumerProperties;
+
     private final HubEventService hubEventService;
 
     private Consumer<String, HubEventAvro> consumer;

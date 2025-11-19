@@ -49,17 +49,17 @@ public class HubEventService {
         sensorRepository.findByIdAndHubId(device.getId(), hubId).ifPresent(sensorRepository::delete);
     }
 
-    private void handleScenarioAdded(String hubId, ScenarioAddedEventAvro scenario) {
-        Scenario newScenario = scenarioRepository.findByHubIdAndName(hubId, scenario.getName())
-                .orElseGet(() -> Scenario.builder().hubId(hubId).name(scenario.getName()).build());
-        scenarioRepository.save(newScenario);
+    private void handleScenarioAdded(String hubId, ScenarioAddedEventAvro scenarioAdded) {
+        Scenario scenario = scenarioRepository.findByHubIdAndName(hubId, scenarioAdded.getName())
+                .orElseGet(() -> Scenario.builder().hubId(hubId).name(scenarioAdded.getName()).build());
+        scenarioRepository.save(scenario);
 
-        List<ScenarioCondition> oldConditions = scenarioConditionRepository.findByScenarioId(newScenario.getId());
+        List<ScenarioCondition> oldConditions = scenarioConditionRepository.findByScenarioId(scenario.getId());
         scenarioConditionRepository.deleteAll(oldConditions);
-        List<ScenarioAction> oldActions = scenarioActionRepository.findByScenarioId(newScenario.getId());
+        List<ScenarioAction> oldActions = scenarioActionRepository.findByScenarioId(scenario.getId());
         scenarioActionRepository.deleteAll(oldActions);
 
-        for (ScenarioConditionAvro conditionAvro : scenario.getConditions()) {
+        for (ScenarioConditionAvro conditionAvro : scenarioAdded.getConditions()) {
             Condition condition = Condition.builder()
                     .type(conditionAvro.getType().name())
                     .value(valueConversion(conditionAvro.getValue()))
@@ -71,15 +71,15 @@ public class HubEventService {
                     .orElseThrow(() -> new IllegalStateException("Сенсор для данного состояния не найден"));
 
             ScenarioCondition scenarioCondition = new ScenarioCondition(
-                    new ScenarioConditionId(newScenario.getId(), sensor.getId(), condition.getId()),
-                    newScenario,
+                    new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()),
+                    scenario,
                     sensor,
                     condition
             );
             scenarioConditionRepository.save(scenarioCondition);
         }
 
-        for (DeviceActionAvro actionAvro : scenario.getActions()) {
+        for (DeviceActionAvro actionAvro : scenarioAdded.getActions()) {
             Action action = Action.builder()
                     .type(actionAvro.getType().name())
                     .value(valueConversion(actionAvro.getValue()))
@@ -89,8 +89,8 @@ public class HubEventService {
             Sensor sensor = sensorRepository.findByIdAndHubId(actionAvro.getSensorId(), hubId)
                     .orElseThrow(() -> new IllegalStateException("Сенсор для данного действия не найден"));
             ScenarioAction scenarioAction = new ScenarioAction(
-                    new ScenarioActionId(newScenario.getId(), sensor.getId(), action.getId()),
-                    newScenario,
+                    new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()),
+                    scenario,
                     sensor,
                     action
             );
@@ -98,8 +98,17 @@ public class HubEventService {
         }
     }
 
-    private void handleScenarioRemoved(String hubId, ScenarioRemovedEventAvro scenario) {
-        scenarioRepository.findByHubIdAndName(hubId, scenario.getName()).ifPresent(scenarioRepository::delete);
+    private void handleScenarioRemoved(String hubId, ScenarioRemovedEventAvro scenarioRemoved) {
+        Scenario scenario = scenarioRepository.findByHubIdAndName(hubId, scenarioRemoved.getName())
+                .orElseThrow(() -> new IllegalStateException("Сценарий не найден"));
+
+        List<ScenarioCondition> conditions = scenarioConditionRepository.findByScenarioId(scenario.getId());
+        scenarioConditionRepository.deleteAll(conditions);
+
+        List<ScenarioAction> actions = scenarioActionRepository.findByScenarioId(scenario.getId());
+        scenarioActionRepository.deleteAll(actions);
+
+        scenarioRepository.delete(scenario);
     }
 
     private Integer valueConversion(Object value) {

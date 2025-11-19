@@ -12,7 +12,6 @@ import lombok.*;
 @NoArgsConstructor
 public class Sensor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(name = "hub_id", nullable = false)

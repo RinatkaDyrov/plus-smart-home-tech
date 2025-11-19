@@ -23,7 +23,7 @@ public class Scenario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "hub_id")
+    @Column(name = "hub_id", nullable = false)
     private String hubId;
 
     private String name;

@@ -119,5 +119,4 @@ public class HubEventService {
             default -> throw new IllegalArgumentException("Unexpected type: " + value.getClass());
         };
     }
-
 }

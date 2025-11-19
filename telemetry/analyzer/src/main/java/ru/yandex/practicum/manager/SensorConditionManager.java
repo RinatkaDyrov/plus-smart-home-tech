@@ -22,45 +22,31 @@ public class SensorConditionManager {
 
     private final Map<ConditionType, Function<SensorStateAvro, Optional<BigDecimal>>> extractors =
             Map.of(
-                    ConditionType.TEMPERATURE, st -> {
-                        Object data = st.getData();
-                        if (data instanceof TemperatureSensorAvro temp) {
-                            return Optional.of(BigDecimal.valueOf(temp.getTemperatureC()));
-                        }
-                        if (data instanceof ClimateSensorAvro climate) {
-                            return Optional.of(BigDecimal.valueOf(climate.getTemperatureC()));
-                        }
-                        return Optional.empty();
+                    ConditionType.TEMPERATURE, state -> switch (state.getData()) {
+                        case TemperatureSensorAvro temp -> Optional.of(BigDecimal.valueOf(temp.getTemperatureC()));
+                        case ClimateSensorAvro climate -> Optional.of(BigDecimal.valueOf(climate.getTemperatureC()));
+                        case null, default -> Optional.empty();
                     },
-                    ConditionType.HUMIDITY, st -> {
-                        if (st.getData() instanceof ClimateSensorAvro climate) {
-                            return Optional.of(BigDecimal.valueOf(climate.getHumidity()));
-                        }
-                        return Optional.empty();
+                    ConditionType.HUMIDITY, state -> switch (state.getData()) {
+                        case ClimateSensorAvro climate -> Optional.of(BigDecimal.valueOf(climate.getHumidity()));
+                        case null, default -> Optional.empty();
                     },
-                    ConditionType.CO2LEVEL, st -> {
-                        if (st.getData() instanceof ClimateSensorAvro climate) {
-                            return Optional.of(BigDecimal.valueOf(climate.getCo2Level()));
-                        }
-                        return Optional.empty();
+                    ConditionType.CO2LEVEL, state -> switch (state.getData()) {
+                        case ClimateSensorAvro climate -> Optional.of(BigDecimal.valueOf(climate.getCo2Level()));
+                        case null, default -> Optional.empty();
                     },
-                    ConditionType.LUMINOSITY, st -> {
-                        if (st.getData() instanceof LightSensorAvro light) {
-                            return Optional.of(BigDecimal.valueOf(light.getLuminosity()));
-                        }
-                        return Optional.empty();
+                    ConditionType.LUMINOSITY, state -> switch (state.getData()) {
+                        case LightSensorAvro light -> Optional.of(BigDecimal.valueOf(light.getLuminosity()));
+                        case null, default -> Optional.empty();
                     },
-                    ConditionType.MOTION, st -> {
-                        if (st.getData() instanceof MotionSensorAvro motion) {
-                            return Optional.of(motion.getMotion() ? BigDecimal.ONE : BigDecimal.ZERO);
-                        }
-                        return Optional.empty();
+                    ConditionType.MOTION, state -> switch (state.getData()) {
+                        case MotionSensorAvro motion ->
+                                Optional.of(motion.getMotion() ? BigDecimal.ONE : BigDecimal.ZERO);
+                        case null, default -> Optional.empty();
                     },
-                    ConditionType.SWITCH, st -> {
-                        if (st.getData() instanceof SwitchSensorAvro sw) {
-                            return Optional.of(sw.getState() ? BigDecimal.ONE : BigDecimal.ZERO);
-                        }
-                        return Optional.empty();
+                    ConditionType.SWITCH, state -> switch (state.getData()) {
+                        case SwitchSensorAvro sw -> Optional.of(sw.getState() ? BigDecimal.ONE : BigDecimal.ZERO);
+                        case null, default -> Optional.empty();
                     }
             );
 

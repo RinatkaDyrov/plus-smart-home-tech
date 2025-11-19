@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.client.HubRouterClient;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionProto;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionRequest;
+import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 import ru.yandex.practicum.model.*;
 import ru.yandex.practicum.repository.ScenarioActionRepository;
@@ -33,12 +34,12 @@ public class ScenarioManager {
             boolean conditionOk = conditions.stream()
                     .allMatch(sc -> {
                         String sensorId = sc.getSensor().getId();
-                        if (!snapshot.getSensorsState().containsKey(sensorId)) {
-                            return false;
-                        }
+                        SensorStateAvro sensorStateAvro = snapshot.getSensorsState().get(sensorId);
+                        if (sensorStateAvro == null) return false;
+
                         return sensorConditionManager.extractValue(
                                         ConditionType.valueOf(sc.getCondition().getType()),
-                                        snapshot.getSensorsState().get(sensorId)
+                                        sensorStateAvro
                                 )
                                 .map(val -> sensorConditionManager.compare(
                                         Operation.valueOf(sc.getCondition().getOperation()),

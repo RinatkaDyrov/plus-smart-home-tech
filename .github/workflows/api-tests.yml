@@ -20,7 +20,7 @@ on:
         type: string
         default: "false"
       print_logs:
-        required: false
+        required: true
         type: string
         default: "false"
 

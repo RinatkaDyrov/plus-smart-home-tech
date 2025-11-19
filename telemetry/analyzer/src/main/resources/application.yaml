@@ -12,13 +12,14 @@ analyzer:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
-      enable-auto-commit: false
     hub:
       group-id: hub-events-group
       value-deserializer: ru.practicum.eventDeserializer.HubEventDeserializer
+      enable-auto-commit: true
     snapshot:
       group-id: snapshots-group
       value-deserializer: ru.practicum.eventDeserializer.SensorSnapshotEventDeserializer
+      enable-auto-commit: false
 
 spring:
   jpa:
@@ -32,8 +33,8 @@ spring:
     init:
       mode: always
   datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/analyzer
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5439/analyzer
     username: analyzer
     password: analyzer
 

@@ -22,8 +22,11 @@ public class KafkaConfig {
     @Value("${analyzer.kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;
 
-    @Value("${analyzer.kafka.consumer.enable-auto-commit}")
-    private boolean enableAutoCommit;
+    @Value("${analyzer.kafka.hub.enable-auto-commit}")
+    private boolean enableHubAutoCommit;
+
+    @Value("${analyzer.kafka.snapshot.enable-auto-commit}")
+    private boolean enableSnapshotAutoCommit;
 
     @Value("${analyzer.kafka.hub.group-id}")
     private String hubGroupId;
@@ -45,7 +48,7 @@ public class KafkaConfig {
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, hubValueDeserializer);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, hubGroupId);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
-        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableHubAutoCommit);
         properties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 200);
         return properties;
     }
@@ -58,7 +61,7 @@ public class KafkaConfig {
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, snapshotValueDeserializer);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, snapshotGroupId);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
-        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        properties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableSnapshotAutoCommit);
         properties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 200);
         return properties;
     }

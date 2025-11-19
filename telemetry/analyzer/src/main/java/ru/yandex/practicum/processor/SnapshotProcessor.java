@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
@@ -24,8 +25,11 @@ public class SnapshotProcessor implements Runnable {
 
     @Value("${topics.snapshots}")
     private String topics;
-    private final Properties snapshotConsumerProperties;
+
     private final SnapshotService snapshotService;
+
+    @Qualifier("snapshotConsumerProperties")
+    private final Properties snapshotConsumerProperties;
 
     private Consumer<String, SensorsSnapshotAvro> consumer;
     private boolean isRunning = true;

@@ -42,9 +42,13 @@ public class HubEventProcessor implements Runnable {
             while (isRunning) {
                 ConsumerRecords<String, HubEventAvro> records = consumer.poll(Duration.ofSeconds(1));
                 for (ConsumerRecord<String, HubEventAvro> record : records) {
-                    HubEventAvro event = record.value();
-                    log.info("Получено событие {} от хаба {}", event, event.getHubId());
-                    hubEventService.handleEvent(event);
+                    try {
+                        HubEventAvro event = record.value();
+                        log.info("Получено событие {} от хаба {}", event, event.getHubId());
+                        hubEventService.handleEvent(event);
+                    } catch (Exception e) {
+                        log.error("Ошибка обработки события из топика {}: {}", topics, e.getMessage());
+                    }
                 }
             }
         } catch (WakeupException e) {
@@ -57,10 +61,14 @@ public class HubEventProcessor implements Runnable {
 
     @PreDestroy
     public void shutdown() {
-        log.info("HubEventProcessor прекращает работу");
+        log.info("Прекращение работы потребителя");
         isRunning = false;
         if (consumer != null) {
-            consumer.wakeup();
+            try {
+                consumer.commitSync();
+            } finally {
+                consumer.close(Duration.ofSeconds(5));
+            }
         }
     }
 }

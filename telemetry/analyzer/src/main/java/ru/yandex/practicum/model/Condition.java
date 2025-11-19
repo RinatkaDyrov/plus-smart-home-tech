@@ -16,7 +16,7 @@ public class Condition {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    String type;
-    String operation;
-    Integer value;
+    private String type;
+    private String operation;
+    private Integer value;
 }

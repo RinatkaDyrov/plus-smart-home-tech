@@ -53,18 +53,10 @@ public class AggregationStarter {
             } catch (Exception e) {
                 log.error("Ошибка во время обработки событий от датчиков", e);
             } finally {
-//
-//                try {
-//                    log.info("Сбрасываем буфер продюсера через flush()");
-//                    producer.flush();
-//                    log.info("Делаем финальный commitSync() оффсетов");
-//                    consumer.commitSync();
-//                } finally {
                     log.info("Закрываем консьюмер");
                     consumer.close();
                     log.info("Закрываем продюсер");
                     producer.close();
-//                }
             }
         }, "aggregation-thread");
         thread.start();

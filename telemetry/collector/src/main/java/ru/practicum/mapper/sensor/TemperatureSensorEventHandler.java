@@ -2,10 +2,10 @@ package ru.practicum.mapper.sensor;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.springframework.stereotype.Component;
-import ru.practicum.events.sensor.SensorEvent;
 import ru.practicum.events.sensor.SensorEventType;
-import ru.practicum.events.sensor.TemperatureSensorEvent;
 import ru.practicum.kafka.producer.KafkaEventProducer;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.TemperatureSensorProto;
 import ru.yandex.practicum.kafka.telemetry.event.TemperatureSensorAvro;
 
 @Component
@@ -16,13 +16,10 @@ public class TemperatureSensorEventHandler extends BaseSensorEventHandler {
     }
 
     @Override
-    protected SpecificRecordBase mapToAvroPayload(SensorEvent event) {
-        TemperatureSensorEvent e = (TemperatureSensorEvent) event;
+    protected SpecificRecordBase mapToAvroPayload(SensorEventProto event) {
+        TemperatureSensorProto e = event.getTemperatureSensorEvent();
 
         return TemperatureSensorAvro.newBuilder()
-                .setId(e.getId())
-                .setHubId(e.getHubId())
-                .setTimestamp(e.getTimestamp())
                 .setTemperatureC(e.getTemperatureC())
                 .setTemperatureF(e.getTemperatureF())
                 .build();

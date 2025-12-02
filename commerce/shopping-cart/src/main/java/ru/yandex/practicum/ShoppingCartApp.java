@@ -1,6 +1,9 @@
 package ru.yandex.practicum;
 
-public class Main {
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ShoppingCartApp {
     public static void main(String[] args) {
         System.out.println("Hello world!");
     }

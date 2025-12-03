@@ -1,5 +1,6 @@
 package ru.yandex.practicum.service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public class StoreService {
         return true;
     }
 
-    public boolean setProductQuantityState(SetProductQuantityStateRequest request) {
+    public boolean setProductQuantityState(@Valid SetProductQuantityStateRequest request) {
         getProductFromDB(request.getProductId()).setQuantityState(request.getQuantityState());
         return true;
     }

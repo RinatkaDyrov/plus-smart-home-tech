@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.controller.page.PageResponse;
 import ru.yandex.practicum.product.ProductCategory;
 import ru.yandex.practicum.product.ProductDto;
+import ru.yandex.practicum.product.QuantityState;
 import ru.yandex.practicum.product.SetProductQuantityStateRequest;
 import ru.yandex.practicum.service.StoreService;
 
@@ -22,9 +24,11 @@ public class ShoppingStoreController {
     private final StoreService storeService;
 
     @GetMapping
-    public Page<ProductDto> getProducts(@RequestBody ProductCategory category,
+    public PageResponse<ProductDto> getProducts(@RequestParam ProductCategory category,
                                         Pageable pageable) {
-        return storeService.getProductsPageable(category, pageable);
+        log.info("Запрос на продукты категории {} с настройками {}", category, pageable);
+        Page<ProductDto> page = storeService.getProductsPageable(category, pageable);
+        return new PageResponse<>(page);
     }
 
     @PutMapping
@@ -43,8 +47,8 @@ public class ShoppingStoreController {
     }
 
     @PostMapping("/quantityState")
-    public boolean setProductQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request) {
-        return storeService.setProductQuantityState(request);
+    public boolean setProductQuantityState(@RequestParam UUID productId, @RequestParam QuantityState quantityState) {
+        return storeService.setProductQuantityState(new SetProductQuantityStateRequest(productId, quantityState));
     }
 
     @GetMapping("/{productId}")

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -7,7 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.product.ProductCategory;
 import ru.yandex.practicum.product.ProductDto;
+import ru.yandex.practicum.product.SetProductQuantityStateRequest;
 import ru.yandex.practicum.service.StoreService;
+
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -24,14 +28,27 @@ public class ShoppingStoreController {
     }
 
     @PutMapping
-    public ProductDto addProduct(@RequestBody Product product) {
-        return storeService.addProduct(product);
+    public ProductDto addProduct(@RequestBody ProductDto dto) {
+        return storeService.addProduct(dto);
     }
 
     @PostMapping
-    public ProductDto updateProduct(@RequestBody ProductDto productDto) {
+    public ProductDto updateProduct(@RequestBody @Valid ProductDto productDto) {
         return storeService.updateProduct(productDto);
     }
 
+    @PostMapping("/removeProductFromStore")
+    public boolean removeProduct(@RequestBody UUID productId) {
+        return storeService.removeProduct(productId);
+    }
 
+    @PostMapping("/quantityState")
+    public boolean setProductQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request) {
+        return storeService.setProductQuantityState(request);
+    }
+
+    @GetMapping("/{productId}")
+    public ProductDto getProductById(@PathVariable UUID productId) {
+        return storeService.findProductById(productId);
+    }
 }

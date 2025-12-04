@@ -1,4 +1,4 @@
-package ru.yandex.practicum.handler;
+package ru.yandex.practicum.exception;
 
 import lombok.Builder;
 import lombok.Data;

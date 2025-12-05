@@ -24,8 +24,11 @@ public class ShoppingCart {
     @Enumerated(EnumType.STRING)
     private ShoppingCartStatus status;
 
-    @OneToMany(mappedBy = "cart",
+    @OneToMany(
+            mappedBy = "cart",
             cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     private List<ShoppingCartItem> items = new ArrayList<>();
 }

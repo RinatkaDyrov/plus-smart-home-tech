@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.exception.ApiError;
 import ru.yandex.practicum.exception.cart.NoProductsInShoppingCartException;
 import ru.yandex.practicum.exception.cart.NotAuthorizedUserException;
+import ru.yandex.practicum.exception.cart.ShoppingCartNotFoundException;
 import ru.yandex.practicum.exception.product.ProductNotFoundException;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class ShoppingCartExceptionHandler {
 
     @ExceptionHandler(NoProductsInShoppingCartException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -48,6 +49,24 @@ public class GlobalExceptionHandler {
         return ApiError.builder()
                 .status(401)
                 .error("UNAUTHORIZED")
+                .message(ex.getMessage())
+                .userMessage(ex.getUserMessage())
+                .stackTrace(stack)
+                .build();
+    }
+
+
+    @ExceptionHandler(ShoppingCartNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleShoppingCartNotFound(ShoppingCartNotFoundException ex) {
+
+        List<String> stack = Arrays.stream(ex.getStackTrace())
+                .map(StackTraceElement::toString)
+                .collect(Collectors.toList());
+
+        return ApiError.builder()
+                .status(404)
+                .error("NOT_FOUND")
                 .message(ex.getMessage())
                 .userMessage(ex.getUserMessage())
                 .stackTrace(stack)

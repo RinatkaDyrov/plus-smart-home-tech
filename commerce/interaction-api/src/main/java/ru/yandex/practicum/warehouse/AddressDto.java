@@ -1,18 +1,17 @@
-package ru.yandex.practicum.cart;
+package ru.yandex.practicum.warehouse;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Map;
-import java.util.UUID;
-
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
 @Builder
-public class ShoppingCartDto {
-    UUID shoppingCartId;
-
-    Map<UUID, Long> products;
+public class AddressDto {
+    String country;
+    String city;
+    String street;
+    String house;
+    String flat;
 }

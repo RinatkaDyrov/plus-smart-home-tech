@@ -1,11 +1,15 @@
 package ru.yandex.practicum.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Setter
+@Getter
+@Builder
 @Entity
 @Table(
         name = "shopping_cart",
@@ -13,9 +17,12 @@ import java.util.UUID;
                 @Index(name = "idx_shopping_cart_username", columnList = "username")
         }
 )
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShoppingCart {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "shopping_cart_id")
     private UUID shoppingCartId;
 
@@ -30,5 +37,6 @@ public class ShoppingCart {
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
+    @Builder.Default
     private List<ShoppingCartItem> items = new ArrayList<>();
 }

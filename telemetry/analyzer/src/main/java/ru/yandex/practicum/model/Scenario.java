@@ -34,6 +34,7 @@ public class Scenario {
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "condition_id")
     )
+    @Builder.Default
     private Set<Condition> conditions = new HashSet<>();
 
     @ManyToMany
@@ -42,5 +43,6 @@ public class Scenario {
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id")
     )
+    @Builder.Default
     private Set<Action> actions = new HashSet<>();
 }

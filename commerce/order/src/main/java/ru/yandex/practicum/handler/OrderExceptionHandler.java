@@ -1,16 +1,14 @@
 package ru.yandex.practicum.handler;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.exception.ApiError;
-import ru.yandex.practicum.exception.cart.NoProductsInShoppingCartException;
 import ru.yandex.practicum.exception.common.NotAuthorizedUserException;
-import ru.yandex.practicum.exception.cart.ShoppingCartNotFoundException;
-import ru.yandex.practicum.exception.product.ProductNotFoundException;
+import ru.yandex.practicum.exception.order.NoOrderFoundException;
+import ru.yandex.practicum.exception.warehouse.NoSpecifiedProductInWarehouseException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,24 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class ShoppingCartExceptionHandler {
-
-    @ExceptionHandler(NoProductsInShoppingCartException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleNoProductsInShoppingCart(ProductNotFoundException ex) {
-
-        List<String> stack = Arrays.stream(ex.getStackTrace())
-                .map(StackTraceElement::toString)
-                .collect(Collectors.toList());
-
-        return ApiError.builder()
-                .status(400)
-                .error("BAD_REQUEST")
-                .message(ex.getMessage())
-                .userMessage(ex.getUserMessage())
-                .stackTrace(stack)
-                .build();
-    }
+public class OrderExceptionHandler {
 
     @ExceptionHandler(NotAuthorizedUserException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -55,18 +36,33 @@ public class ShoppingCartExceptionHandler {
                 .build();
     }
 
-
-    @ExceptionHandler(ShoppingCartNotFoundException.class)
+    @ExceptionHandler(NoSpecifiedProductInWarehouseException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleShoppingCartNotFound(ShoppingCartNotFoundException ex) {
-
+    public ApiError handleNoSpecifiedProductInWarehouse (NoSpecifiedProductInWarehouseException ex) {
         List<String> stack = Arrays.stream(ex.getStackTrace())
                 .map(StackTraceElement::toString)
                 .collect(Collectors.toList());
 
         return ApiError.builder()
-                .status(404)
-                .error("NOT_FOUND")
+                .status(400)
+                .error("NOT FOUND")
+                .message(ex.getMessage())
+                .userMessage(ex.getUserMessage())
+                .stackTrace(stack)
+                .build();
+    }
+
+
+    @ExceptionHandler(NoOrderFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleNoOrderFound (NoOrderFoundException ex) {
+        List<String> stack = Arrays.stream(ex.getStackTrace())
+                .map(StackTraceElement::toString)
+                .collect(Collectors.toList());
+
+        return ApiError.builder()
+                .status(400)
+                .error("NOT FOUND")
                 .message(ex.getMessage())
                 .userMessage(ex.getUserMessage())
                 .stackTrace(stack)

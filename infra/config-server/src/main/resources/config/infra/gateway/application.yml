@@ -4,16 +4,17 @@ spring:
       discovery:
         locator:
           enabled: true
+
       routes:
         - id: shopping_cart_service_route
-          uri: lb://shopping-cart
+          uri: lb://SHOPPING-CART
           predicates:
             - Path=/shopping-cart/**
           filters:
             - PrefixPath=/api/v1
 
         - id: shopping_store_service_route
-          uri: lb://shopping-store
+          uri: lb://SHOPPING-STORE
           predicates:
             - Path=/shopping-store/**
           filters:
@@ -30,4 +31,4 @@ spring:
                   basedOnPreviousValue: false
 
 server:
-  port: 8080
+  port: 8081

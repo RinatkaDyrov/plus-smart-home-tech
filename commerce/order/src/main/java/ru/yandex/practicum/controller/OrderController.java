@@ -28,7 +28,7 @@ public class OrderController {
                                         @RequestParam(defaultValue = "0") Integer page,
                                         @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение списка заказов пользователя {}", username);
-        return orderService.getUserOrders;
+        return orderService.getUserOrders(username, page, size);
     }
 
     @PutMapping
@@ -40,7 +40,7 @@ public class OrderController {
     @PostMapping("/return")
     public OrderDto returnOrder(@RequestBody @Valid ProductReturnRequest request) {
         log.info("Возврат заказа {}", request);
-        return orderService.returnOrder();
+        return orderService.returnOrder(request);
     }
 
     @PostMapping("/payment")
@@ -81,5 +81,37 @@ public class OrderController {
                                   UUID orderId) {
         log.info("Завершение заказа");
         return orderService.completeOrder(orderId);
+    }
+
+    @PostMapping("/calculate/total")
+    public OrderDto calculateTotalPrice(@RequestBody
+                                        @NotNull(message = "Необходимо указать идентификационный номер заказа")
+                                        UUID orderId) {
+        log.info("Расчёт стоимости заказа");
+        return orderService.calculateTotalPrice(orderId);
+    }
+
+    @PostMapping("/calculate/delivery")
+    public OrderDto calculateDeliveryPrice(@RequestBody
+                                           @NotNull(message = "Необходимо указать идентификационный номер заказа")
+                                           UUID orderId) {
+        log.info("Расчёт стоимости доставки заказа");
+        return orderService.calculateDeliveryPrice(orderId);
+    }
+
+    @PostMapping("/assembly")
+    public OrderDto assembly(@RequestBody
+                             @NotNull(message = "Необходимо указать идентификационный номер заказа")
+                             UUID orderId) {
+        log.info("Сборка заказа");
+        return orderService.assembly(true, orderId);
+    }
+
+    @PostMapping("/assembly/failed")
+    public OrderDto assemblyFailed(@RequestBody
+                             @NotNull(message = "Необходимо указать идентификационный номер заказа")
+                             UUID orderId) {
+        log.info("Сборка заказа произошла с ошибкой");
+        return orderService.assembly(false, orderId);
     }
 }

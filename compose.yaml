@@ -89,3 +89,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  order-db:
+    image: postgres:16.1
+    container_name: postgres-cart
+    ports:
+      - "9432:5432"
+    environment:
+      POSTGRES_USER: order
+      POSTGRES_PASSWORD: order
+      POSTGRES_DB: order
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U order -d order" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10

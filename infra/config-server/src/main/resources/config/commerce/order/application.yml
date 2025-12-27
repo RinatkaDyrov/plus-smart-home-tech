@@ -10,9 +10,9 @@ spring:
     init:
       mode: always
   datasource:
-    url: jdbc:postgresql://localhost:6432/store
-    username: store
-    password: store
+    url: jdbc:postgresql://localhost:9432/order
+    username: order
+    password: order
 
 server:
   port: 0

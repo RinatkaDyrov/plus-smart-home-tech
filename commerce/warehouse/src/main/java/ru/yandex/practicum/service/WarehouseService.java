@@ -7,19 +7,16 @@ import ru.yandex.practicum.cart.ShoppingCartDto;
 import ru.yandex.practicum.exception.warehouse.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.exception.warehouse.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.exception.warehouse.SpecifiedProductAlreadyInWarehouseException;
+import ru.yandex.practicum.feignClient.ShoppingStoreClient;
 import ru.yandex.practicum.mapper.WarehouseMapper;
 import ru.yandex.practicum.model.WarehouseProduct;
+import ru.yandex.practicum.repository.BookingRepository;
 import ru.yandex.practicum.repository.WarehouseProductRepository;
-import ru.yandex.practicum.warehouse.AddProductToWarehouseRequest;
-import ru.yandex.practicum.warehouse.AddressDto;
-import ru.yandex.practicum.warehouse.BookedProductsDto;
-import ru.yandex.practicum.warehouse.NewProductInWarehouseRequest;
+import ru.yandex.practicum.warehouse.*;
 
+import java.awt.print.Book;
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +25,8 @@ public class WarehouseService {
 
     private final WarehouseProductRepository repository;
     private final WarehouseMapper mapper;
+    private final BookingRepository bookingRepository;
+    private final ShoppingStoreClient shoppingStoreClient;
 
     private static final String[] ADDRESSES = {"ADDRESS_1", "ADDRESS_2"};
     private static final String CURRENT_ADDRESS =
@@ -102,5 +101,14 @@ public class WarehouseService {
                 .house(CURRENT_ADDRESS)
                 .flat(CURRENT_ADDRESS)
                 .build();
+    }
+
+    public void shippedToDelivery(ShippedToDeliveryRequest request) {
+    }
+
+    public void returnProducts(Map<UUID, Integer> products) {
+    }
+
+    public BookedProductsDto assembly(AssemblyProductsForOrderRequest request) {
     }
 }

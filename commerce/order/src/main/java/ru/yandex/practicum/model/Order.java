@@ -24,7 +24,7 @@ public class Order {
     @Column(name = "shopping_cart_id")
     UUID shoppingCartId;
 
-    Map<UUID, Integer> products;
+    Map<UUID, Long> products;
 
     @Column(name = "payment_id")
     UUID paymentId;

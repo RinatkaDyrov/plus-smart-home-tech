@@ -11,7 +11,7 @@ import ru.yandex.practicum.product.QuantityState;
 
 import java.util.UUID;
 
-@FeignClient(name = "shopping-store")
+@FeignClient(name = "SHOPPING-STORE")
 public interface ShoppingStoreClient {
 
     @GetMapping("/api/v1/shopping-store")

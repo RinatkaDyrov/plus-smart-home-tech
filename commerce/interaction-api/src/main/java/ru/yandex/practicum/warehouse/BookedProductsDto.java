@@ -6,16 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
-
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
 @Builder
 public class BookedProductsDto {
     @NotNull(message = "Необходимо указать общий вес доставки")
-    BigDecimal deliveryWeight;
+    Double deliveryWeight;
     @NotNull(message = "Необходимо указать общий объем доставки")
-    BigDecimal deliveryVolume;
+    Double deliveryVolume;
     @NotNull(message = "Необходимо указать есть ли в доставке хрупкие вещи")
     Boolean fragile;
 }

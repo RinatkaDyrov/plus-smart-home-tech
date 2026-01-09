@@ -48,7 +48,7 @@ public class WarehouseController {
     @PostMapping("/return")
     public void returnProducts(@RequestBody
                                @NotNull(message = "Необходимо указать список товаров для оформления возврата")
-                               Map<UUID, Integer> products) {
+                               Map<UUID, Long> products) {
         log.info("Принять возврат товаров на склад");
         warehouseService.returnProducts(products);
     }

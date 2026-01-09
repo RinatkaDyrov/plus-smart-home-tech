@@ -1,4 +1,4 @@
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
   order_id UUID PRIMARY KEY,
   shopping_cart_id UUID,
   payment_id UUID NULL,

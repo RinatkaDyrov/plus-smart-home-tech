@@ -12,7 +12,7 @@ import java.util.UUID;
 @FeignClient(name = "ORDER")
 public interface OrderClient {
     @GetMapping
-    List<OrderDto> getClientOrders(
+    List<OrderDto> getUserOrders(
             @RequestParam String username,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size);
@@ -21,7 +21,7 @@ public interface OrderClient {
     OrderDto createNewOrder(@RequestBody CreateNewOrderRequest request);
 
     @PostMapping("/return")
-    OrderDto productReturn(@RequestBody ProductReturnRequest request);
+    OrderDto returnOrder(@RequestBody ProductReturnRequest request);
 
     OrderDto payment(@RequestBody UUID orderId);
 
@@ -35,13 +35,13 @@ public interface OrderClient {
     OrderDto deliveryFailed(@RequestBody UUID orderId);
 
     @PostMapping("/completed")
-    OrderDto complete(@RequestBody  UUID orderId);
+    OrderDto completeOrder(@RequestBody  UUID orderId);
 
     @PostMapping("/calculate/total")
-    OrderDto calculateTotalCost(@RequestBody UUID orderId);
+    OrderDto calculateTotalPrice(@RequestBody UUID orderId);
 
     @PostMapping("/calculate/delivery")
-    OrderDto calculateDeliveryCost(@RequestBody UUID orderId);
+    OrderDto calculateDeliveryPrice(@RequestBody UUID orderId);
 
     @PostMapping("/assembly")
     OrderDto assembly(@RequestBody  UUID orderId);

@@ -17,7 +17,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "order_id")
     UUID orderId;
 
@@ -36,10 +35,10 @@ public class Order {
     OrderState state;
 
     @Column(name = "delivery_weight")
-    BigDecimal deliveryWeight;
+    Double deliveryWeight;
 
     @Column(name = "delivery_volume")
-    BigDecimal deliveryVolume;
+    Double deliveryVolume;
 
     Boolean fragile;
 

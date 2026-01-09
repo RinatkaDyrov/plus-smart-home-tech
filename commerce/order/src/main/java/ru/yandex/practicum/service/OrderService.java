@@ -42,6 +42,7 @@ public class OrderService {
 
     private static final String NOT_FOUND_MSG = "Данный заказ не найден";
 
+    @Transactional(readOnly = true)
     public List<OrderDto> getUserOrders(String username, Integer page, Integer size) {
         if (username == null || username.isBlank()) {
             throw new NotAuthorizedUserException("Необходимо указать имя пользователя", "Пользователь не авторизован");
@@ -74,7 +75,7 @@ public class OrderService {
         savedOrder.setDeliveryVolume(bookedProducts.getDeliveryVolume());
         savedOrder.setDeliveryWeight(bookedProducts.getDeliveryWeight());
 
-        savedOrder.setProductPrice(paymentClient.calculateOrderTotal(orderMapper.mapToOrderDto(savedOrder)));
+        savedOrder.setProductPrice(paymentClient.calculateOrderTotalCost(orderMapper.mapToOrderDto(savedOrder)));
 
         DeliveryDto deliveryDto = DeliveryDto.builder()
                 .orderId(savedOrder.getOrderId())
@@ -126,13 +127,13 @@ public class OrderService {
 
     public OrderDto calculateTotalPrice(UUID orderId) {
         Order order = findOrder(orderId);
-        order.setTotalPrice(paymentClient.getTotalPrice(orderMapper.mapToOrderDto(order)));
+        order.setTotalPrice(paymentClient.calculateTotalCost(orderMapper.mapToOrderDto(order)));
         return orderMapper.mapToOrderDto(order);
     }
 
     public OrderDto calculateDeliveryPrice(UUID orderId) {
         Order order = findOrder(orderId);
-        order.setDeliveryPrice(paymentClient.getDeliveryPrice(orderMapper.mapToOrderDto(order)));
+        order.setDeliveryPrice(deliveryClient.calculateDeliveryCost(orderMapper.mapToOrderDto(order)));
         return orderMapper.mapToOrderDto(order);
     }
 

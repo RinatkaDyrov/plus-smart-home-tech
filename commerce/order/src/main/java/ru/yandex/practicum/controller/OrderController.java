@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.feignClient.OrderClient;
 import ru.yandex.practicum.order.CreateNewOrderRequest;
 import ru.yandex.practicum.order.OrderDto;
 import ru.yandex.practicum.order.ProductReturnRequest;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/order")
 @RequiredArgsConstructor
 @Slf4j
-public class OrderController {
+public class OrderController implements OrderClient {
 
     private final OrderService orderService;
 

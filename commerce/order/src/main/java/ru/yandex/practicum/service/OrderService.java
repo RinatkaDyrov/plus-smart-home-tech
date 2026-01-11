@@ -40,8 +40,6 @@ public class OrderService {
     private final PaymentClient paymentClient;
     private final DeliveryClient deliveryClient;
 
-    private static final String NOT_FOUND_MSG = "Данный заказ не найден";
-
     @Transactional(readOnly = true)
     public List<OrderDto> getUserOrders(String username, Integer page, Integer size) {
         if (username == null || username.isBlank()) {
@@ -91,12 +89,14 @@ public class OrderService {
 
     public OrderDto returnOrder(ProductReturnRequest request) {
         Order order = orderRepository.findById(request.getOrderId())
-                .orElseThrow(() -> new NoOrderFoundException(NOT_FOUND_MSG, "Заказ не найден"));
+                .orElseThrow(() -> new NoOrderFoundException(
+                        "Заказ с ID " + request.getOrderId() + " не найден", "Заказ не найден")
+                );
 
         warehouseClient.returnedProduct(request.getProducts());
         order.setState(OrderState.PRODUCT_RETURNED);
 
-        return orderMapper.mapToOrderDto(order);
+        return orderMapper.mapToOrderDto(orderRepository.save(order));
     }
 
     public OrderDto payment(boolean success, UUID orderId) {
@@ -106,50 +106,56 @@ public class OrderService {
         } else {
             order.setState(OrderState.PAYMENT_FAILED);
         }
+        return orderMapper.mapToOrderDto(orderRepository.save(order));
+    }
+
+    public OrderDto successfulDelivery(UUID orderId) {
+        Order order = findOrder(orderId);
+        order.setState(OrderState.DELIVERED);
         return orderMapper.mapToOrderDto(order);
     }
 
-    public OrderDto delivery(boolean success, UUID orderId) {
+    public OrderDto failedDelivery(UUID orderId) {
         Order order = findOrder(orderId);
-        if (success) {
-            order.setState(OrderState.DELIVERED);
-        } else {
-            order.setState(OrderState.DELIVERY_FAILED);
-        }
-        return orderMapper.mapToOrderDto(order);
+        order.setState(OrderState.DELIVERY_FAILED);
+        return orderMapper.mapToOrderDto(orderRepository.save(order));
     }
 
     public OrderDto completeOrder(UUID orderId) {
         Order order = findOrder(orderId);
         order.setState(OrderState.COMPLETED);
-        return orderMapper.mapToOrderDto(order);
+        return orderMapper.mapToOrderDto(orderRepository.save(order));
     }
 
     public OrderDto calculateTotalPrice(UUID orderId) {
         Order order = findOrder(orderId);
         order.setTotalPrice(paymentClient.calculateTotalCost(orderMapper.mapToOrderDto(order)));
-        return orderMapper.mapToOrderDto(order);
+        return orderMapper.mapToOrderDto(orderRepository.save(order));
     }
 
     public OrderDto calculateDeliveryPrice(UUID orderId) {
         Order order = findOrder(orderId);
         order.setDeliveryPrice(deliveryClient.calculateDeliveryCost(orderMapper.mapToOrderDto(order)));
-        return orderMapper.mapToOrderDto(order);
+        return orderMapper.mapToOrderDto(orderRepository.save(order));
     }
 
-    public OrderDto assembly(boolean success, UUID orderId) {
+    public OrderDto assembly(UUID orderId) {
         Order order = findOrder(orderId);
-        if (success) {
-            order.setState(OrderState.ASSEMBLED);
-        } else {
-            order.setState(OrderState.ASSEMBLY_FAILED);
-        }
-        return orderMapper.mapToOrderDto(order);
+        order.setState(OrderState.ASSEMBLED);
+        return orderMapper.mapToOrderDto(orderRepository.save(order));
+    }
+
+    public OrderDto assemblyFailed(UUID orderId) {
+        Order order = findOrder(orderId);
+        order.setState(OrderState.ASSEMBLED);
+        return orderMapper.mapToOrderDto(orderRepository.save(order));
     }
 
     private Order findOrder(UUID orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new NoOrderFoundException(NOT_FOUND_MSG, "Заказ не найден"));
+                .orElseThrow(() -> new NoOrderFoundException(
+                        "Заказ с ID " + orderId + " не найден", "Заказ не найден")
+                );
     }
 }
 

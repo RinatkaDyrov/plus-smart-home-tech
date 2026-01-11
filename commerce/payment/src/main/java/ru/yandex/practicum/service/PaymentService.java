@@ -36,15 +36,15 @@ public class PaymentService {
                 .totalPrice(orderDto.getTotalPrice())
                 .deliveryPrice(orderDto.getDeliveryPrice())
                 .productPrice(orderDto.getProductPrice())
-                .feeTotal(orderDto.getTotalPrice().multiply(BigDecimal.valueOf(0.1)))
+                .feeTotal(orderDto.getProductPrice().multiply(BigDecimal.valueOf(0.1)))
                 .status(PaymentStatus.PENDING)
                 .build();
         return PaymentMapper.toDto(paymentRepository.save(payment));
     }
 
     public BigDecimal calculateTotalCost(OrderDto orderDto) {
-        return orderDto.getTotalPrice()
-                .add(orderDto.getTotalPrice().multiply(BigDecimal.valueOf(0.1)))
+        return orderDto.getProductPrice()
+                .add(orderDto.getProductPrice().multiply(BigDecimal.valueOf(0.1)))
                 .add(orderDto.getDeliveryPrice());
     }
 

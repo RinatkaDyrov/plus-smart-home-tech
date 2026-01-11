@@ -48,7 +48,7 @@ public class OrderController implements OrderClient {
     public OrderDto payment(@RequestBody
                             @NotNull(message = "Необходимо указать идентификационный номер заказа")
                             UUID orderId) {
-        log.info("Выполняется оплата заказа");
+        log.info("Выполняется оплата заказа (ID заказа: {})", orderId);
         return orderService.payment(true, orderId);
     }
 
@@ -56,7 +56,7 @@ public class OrderController implements OrderClient {
     public OrderDto paymentFailed(@RequestBody
                                   @NotNull(message = "Необходимо указать идентификационный номер заказа")
                                   UUID orderId) {
-        log.info("Оплата заказа не прошла");
+        log.info("Оплата заказа не прошла (ID заказа: {})", orderId);
         return orderService.payment(false, orderId);
     }
 
@@ -64,23 +64,23 @@ public class OrderController implements OrderClient {
     public OrderDto delivery(@RequestBody
                              @NotNull(message = "Необходимо указать идентификационный номер заказа")
                              UUID orderId) {
-        log.info("Выполняется доставка заказа");
-        return orderService.delivery(true, orderId);
+        log.info("Выполняется доставка заказа (ID заказа: {})", orderId);
+        return orderService.successfulDelivery(orderId);
     }
 
     @PostMapping("/delivery/failed")
     public OrderDto deliveryFailed(@RequestBody
                                    @NotNull(message = "Необходимо указать идентификационный номер заказа")
                                    UUID orderId) {
-        log.info("Доставка заказа произошла с ошибкой");
-        return orderService.delivery(false, orderId);
+        log.info("Доставка заказа произошла с ошибкой (ID заказа: {})", orderId);
+        return orderService.failedDelivery(orderId);
     }
 
     @PostMapping("/completed")
     public OrderDto completeOrder(@RequestBody
                                   @NotNull(message = "Необходимо указать идентификационный номер заказа")
                                   UUID orderId) {
-        log.info("Завершение заказа");
+        log.info("Завершение заказа (ID заказа: {})", orderId);
         return orderService.completeOrder(orderId);
     }
 
@@ -88,7 +88,7 @@ public class OrderController implements OrderClient {
     public OrderDto calculateTotalPrice(@RequestBody
                                         @NotNull(message = "Необходимо указать идентификационный номер заказа")
                                         UUID orderId) {
-        log.info("Расчёт стоимости заказа");
+        log.info("Расчёт стоимости заказа (ID заказа: {})", orderId);
         return orderService.calculateTotalPrice(orderId);
     }
 
@@ -96,7 +96,7 @@ public class OrderController implements OrderClient {
     public OrderDto calculateDeliveryPrice(@RequestBody
                                            @NotNull(message = "Необходимо указать идентификационный номер заказа")
                                            UUID orderId) {
-        log.info("Расчёт стоимости доставки заказа");
+        log.info("Расчёт стоимости доставки заказа (ID заказа: {})", orderId);
         return orderService.calculateDeliveryPrice(orderId);
     }
 
@@ -104,15 +104,15 @@ public class OrderController implements OrderClient {
     public OrderDto assembly(@RequestBody
                              @NotNull(message = "Необходимо указать идентификационный номер заказа")
                              UUID orderId) {
-        log.info("Сборка заказа");
-        return orderService.assembly(true, orderId);
+        log.info("Сборка заказа (ID заказа: {})", orderId);
+        return orderService.assembly(orderId);
     }
 
     @PostMapping("/assembly/failed")
     public OrderDto assemblyFailed(@RequestBody
                              @NotNull(message = "Необходимо указать идентификационный номер заказа")
                              UUID orderId) {
-        log.info("Сборка заказа произошла с ошибкой");
-        return orderService.assembly(false, orderId);
+        log.info("Сборка заказа произошла с ошибкой (ID заказа: {})", orderId);
+        return orderService.assemblyFailed(orderId);
     }
 }

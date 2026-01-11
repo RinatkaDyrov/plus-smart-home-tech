@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS bookings (
 );
 
 CREATE TABLE IF NOT EXISTS bookings_products (
-    shopping_cart_id uuid REFERENCES bookings (shopping_cart_id) ON DELETE CASCADE PRIMARY KEY,
-    product_id uuid NOT NULL,
+    shopping_cart_id UUID REFERENCES bookings (shopping_cart_id) ON DELETE CASCADE PRIMARY KEY,
+    product_id UUID NOT NULL,
     quantity INTEGER
     )

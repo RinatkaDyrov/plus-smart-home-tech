@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.exception.ApiError;
 import ru.yandex.practicum.exception.cart.NoProductsInShoppingCartException;
-import ru.yandex.practicum.exception.cart.NotAuthorizedUserException;
+import ru.yandex.practicum.exception.common.NotAuthorizedUserException;
 import ru.yandex.practicum.exception.cart.ShoppingCartNotFoundException;
 import ru.yandex.practicum.exception.product.ProductNotFoundException;
 
@@ -40,7 +40,7 @@ public class ShoppingCartExceptionHandler {
 
     @ExceptionHandler(NotAuthorizedUserException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ApiError handleProductNotAuthorizedUser(ProductNotFoundException ex) {
+    public ApiError handleProductNotAuthorizedUser(NotAuthorizedUserException ex) {
 
         List<String> stack = Arrays.stream(ex.getStackTrace())
                 .map(StackTraceElement::toString)

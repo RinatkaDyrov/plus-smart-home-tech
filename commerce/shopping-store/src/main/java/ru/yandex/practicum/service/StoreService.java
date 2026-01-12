@@ -15,7 +15,11 @@ import ru.yandex.practicum.product.ProductState;
 import ru.yandex.practicum.product.SetProductQuantityStateRequest;
 import ru.yandex.practicum.repository.StoreRepository;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +66,10 @@ public class StoreService {
                                 "Продукт не найден"
                         )
                 );
+    }
+
+    public Map<UUID, BigDecimal> getProductPrices(List<UUID> productIds) {
+        return storeRepository.findAllByProductIdIn(productIds).stream()
+                .collect(Collectors.toMap(Product::getProductId, Product::getPrice));
     }
 }

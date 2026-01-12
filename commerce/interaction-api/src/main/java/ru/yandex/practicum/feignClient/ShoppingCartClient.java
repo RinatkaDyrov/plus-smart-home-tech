@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@FeignClient(name = "shopping-cart")
+@FeignClient(name = "SHOPPING-CART")
 public interface ShoppingCartClient {
 
     @GetMapping("/api/v1/shopping-cart")

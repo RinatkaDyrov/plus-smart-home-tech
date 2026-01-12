@@ -36,7 +36,7 @@ services:
 
   analyzer-db:
     image: postgres:16.1
-    container_name: analyzer-db
+    container_name: postgres-analyzer-db
     restart: always
     environment:
       POSTGRES_DB: analyzer
@@ -47,7 +47,7 @@ services:
 
   store-db:
     image: postgres:16.1
-    container_name: postgres-store
+    container_name: postgres-store-db
     ports:
       - "6432:5432"
     environment:
@@ -62,7 +62,7 @@ services:
 
   cart-db:
     image: postgres:16.1
-    container_name: postgres-cart
+    container_name: postgres-cart-db
     ports:
       - "7432:5432"
     environment:
@@ -77,7 +77,7 @@ services:
 
   warehouse-db:
     image: postgres:16.1
-    container_name: warehouse-db
+    container_name: postgres-warehouse-db
     ports:
       - "8432:5432"
     environment:
@@ -86,6 +86,51 @@ services:
       POSTGRES_DB: warehouse
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U warehouse -d warehouse" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  order-db:
+    image: postgres:16.1
+    container_name: postgres- order-db
+    ports:
+      - "9432:5432"
+    environment:
+      POSTGRES_USER: order
+      POSTGRES_PASSWORD: order
+      POSTGRES_DB: order
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U order -d order" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  payment-db:
+    image: postgres:16.1
+    container_name: postgres- payment-db
+    ports:
+      - "9442:5432"
+    environment:
+      POSTGRES_USER: payment
+      POSTGRES_PASSWORD: payment
+      POSTGRES_DB: payment
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U order -d order" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  delivery-db:
+    image: postgres:16.1
+    container_name: postgres- delivery-db
+    ports:
+      - "9452:5432"
+    environment:
+      POSTGRES_USER: delivery
+      POSTGRES_PASSWORD: delivery
+      POSTGRES_DB: delivery
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U order -d order" ]
       interval: 5s
       timeout: 5s
       retries: 10

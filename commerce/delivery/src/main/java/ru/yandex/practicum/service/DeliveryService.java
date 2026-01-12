@@ -7,6 +7,7 @@ import ru.yandex.practicum.delivery.DeliveryDto;
 import ru.yandex.practicum.exception.delivery.NoDeliveryFoundException;
 import ru.yandex.practicum.feignClient.OrderClient;
 import ru.yandex.practicum.feignClient.WarehouseClient;
+import ru.yandex.practicum.mapper.AddressMapper;
 import ru.yandex.practicum.mapper.DeliveryMapper;
 import ru.yandex.practicum.model.Delivery;
 import ru.yandex.practicum.model.DeliveryState;
@@ -30,13 +31,14 @@ public class DeliveryService {
     private static final BigDecimal DELIVERY_DISTANCE_MULTIPLE = new BigDecimal("0.2");
 
     private final DeliveryRepository deliveryRepository;
-    private final DeliveryMapper mapper;
+    private final DeliveryMapper deliveryMapper;
+    private final AddressMapper addressMapper;
     private final WarehouseClient warehouseClient;
     private final OrderClient orderClient;
     private final AddressService addressService;
 
     public DeliveryDto createOrder(DeliveryDto deliveryDto) {
-        Delivery delivery = mapper.toDelivery(deliveryDto);
+        Delivery delivery = deliveryMapper.toDelivery(deliveryDto);
 
         delivery.setFromAddress(addressService.getOrCreate(delivery.getFromAddress()));
         delivery.setToAddress(addressService.getOrCreate(delivery.getToAddress()));
@@ -45,7 +47,7 @@ public class DeliveryService {
             delivery.setDeliveryState(DeliveryState.CREATED);
         }
 
-        return mapper.toDeliveryDto(deliveryRepository.save(delivery));
+        return deliveryMapper.toDeliveryDto(deliveryRepository.save(delivery));
     }
 
     public void successfulDelivery(UUID deliveryId) {
@@ -80,7 +82,7 @@ public class DeliveryService {
 
         BigDecimal cost = DEFAULT_COST;
 
-        AddressDto warehouseAddress = warehouseClient.getCurrentWarehouseAddress();
+        AddressDto warehouseAddress = addressMapper.toAddressDto(delivery.getFromAddress());
 
         if ("ADDRESS_2".equals(warehouseAddress.getCity())) {
             cost = cost.add(cost.multiply(WAREHOUSE_ADDRESS_MULTIPLE));
